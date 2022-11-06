@@ -4,10 +4,18 @@ module.exports = {
     theme: {
         extend: {},
         fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            serif: ["Merriweather", "serif"],
-            mono: ["JetBrains Mono", "monospace"],
+            sans: ["Mulish", "sans-serif"],
+            // serif: ["Merriweather", "serif"],
+            // mono: ["JetBrains Mono", "monospace"],
+        },
+        container: {
+            center: true,
+            padding: 0,
+            margin: 0,
         },
     },
-    plugins: [],
+    plugins: [require("daisyui")],
+    daisyui: {
+        themes: ["night", "winter"],
+    },
 };
