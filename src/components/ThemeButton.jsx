@@ -3,23 +3,27 @@ import { FaRegMoon } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 export const ThemeButton = () => {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(null);
 
     const themeToggler = () => {
         setDarkMode(!darkMode);
     };
 
     useEffect(() => {
-        const theme = JSON.parse(localStorage.getItem("theme")) || false;
+        const theme = JSON.parse(localStorage.getItem("theme"));
 
         setDarkMode(theme);
     }, []);
 
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.setAttribute("data-theme", "winter");
-        } else {
-            document.documentElement.setAttribute("data-theme", "night");
+        if (darkMode !== null) {
+            if (darkMode) {
+                document.documentElement.setAttribute("data-theme", "winter");
+                localStorage.setItem("theme", JSON.stringify(true));
+            } else {
+                document.documentElement.setAttribute("data-theme", "night");
+                localStorage.setItem("theme", JSON.stringify(false));
+            }
         }
     }, [darkMode]);
 
