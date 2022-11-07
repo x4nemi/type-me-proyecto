@@ -4,6 +4,8 @@ import { AiOutlineGoogle } from "react-icons/ai";
 import { useForm } from "../../hooks";
 import { ToastContainer, toast } from "react-toastify";
 
+import { Link as RouterLink } from "react-router-dom";
+
 const formData = {
     email: "",
     password: "",
@@ -35,14 +37,13 @@ export const LoginPage = () => {
         event.preventDefault();
         setFormSubmitted(true);
         const theme = JSON.parse(localStorage.getItem("theme"));
-        console.log(theme);
 
         if (!isFormValid) {
             toast(
                 <div>
                     Error en el formulario:
-                    <br /> {emailValid}
-                    <br /> {passwordValid}
+                    {!!emailValid && <div>{emailValid}</div>}
+                    {!!passwordValid && <div>{passwordValid}</div>}
                 </div>,
                 {
                     icon: "😧",
@@ -111,9 +112,12 @@ export const LoginPage = () => {
                     </form>
                     <div className="row-end-1">
                         ¿No tienes cuenta?
-                        <button className="btn btn-active btn-link">
+                        <RouterLink
+                            to="/auth/register"
+                            className="btn btn-active btn-link"
+                        >
                             Regístrate
-                        </button>
+                        </RouterLink>
                     </div>
                 </div>
             </div>
