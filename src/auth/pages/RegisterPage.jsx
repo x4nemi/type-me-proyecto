@@ -39,14 +39,11 @@ export const RegisterPage = () => {
         formState,
     } = useForm(formData, formValidations);
 
-    const [formSubmitted, setFormSubmitted] = useState(false);
-
     const dispatch = useDispatch();
     const { errorMessage, status } = useSelector((state) => state.auth);
 
     const handleClick = (event) => {
         event.preventDefault();
-        setFormSubmitted(true);
         const theme = JSON.parse(localStorage.getItem("theme"));
 
         if (!isFormValid) {

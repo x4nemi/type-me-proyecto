@@ -6,7 +6,11 @@ import { ToastContainer, toast } from "react-toastify";
 
 import { Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { startGoogleSignIn } from "../../store/slices/auth/thunks";
+import {
+    startGoogleSignIn,
+    startLogInWithEmailAndPassword,
+} from "../../store/slices/auth/thunks";
+import { CheckingAuth } from "../../components/CheckingAuth";
 
 const formData = {
     email: "",
@@ -35,13 +39,10 @@ export const LoginPage = () => {
 
     const { errorMessage, status } = useSelector((state) => state.auth);
 
-    const [formSubmitted, setFormSubmitted] = useState(false);
-
     const dispatch = useDispatch();
 
     const handleClick = (event) => {
         event.preventDefault();
-        setFormSubmitted(true);
         const theme = JSON.parse(localStorage.getItem("theme"));
 
         if (!isFormValid) {
@@ -61,6 +62,7 @@ export const LoginPage = () => {
                 icon: "🚀",
                 theme: theme ? "light" : "dark",
             });
+            dispatch(startLogInWithEmailAndPassword(formState));
             setFormStates(formData);
         }
     };
