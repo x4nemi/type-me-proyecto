@@ -5,6 +5,8 @@ import { useForm } from "../../hooks";
 import { ToastContainer, toast } from "react-toastify";
 
 import { Link as RouterLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { startGoogleSignIn } from "../../store/slices/auth/thunks";
 
 const formData = {
     email: "",
@@ -31,7 +33,11 @@ export const LoginPage = () => {
         formState,
     } = useForm(formData, formValidations);
 
+    const { errorMessage, status } = useSelector((state) => state.auth);
+
     const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const dispatch = useDispatch();
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -59,6 +65,11 @@ export const LoginPage = () => {
         }
     };
 
+    const googleSignIn = (event) => {
+        event.preventDefault();
+        dispatch(startGoogleSignIn());
+    };
+
     return (
         <AuthLayout title="Inicia sesión">
             <div className="card bg-base-100">
@@ -78,7 +89,7 @@ export const LoginPage = () => {
                                     name="email"
                                     type="text"
                                     placeholder="info@site.com"
-                                    className="input input-bordered"
+                                    className="input input-bordered w-full"
                                 />
                             </label>
                             <label className="input-group mb-4 input-group-lg">
@@ -89,18 +100,40 @@ export const LoginPage = () => {
                                     name="password"
                                     type="password"
                                     placeholder="●●●●●●●●●●"
-                                    className="input input-bordered"
+                                    className="input input-bordered w-full"
                                 />
                             </label>
+                            {!!errorMessage && status !== "checking" && (
+                                <div className="alert alert-error shadow-lg mb-4">
+                                    <div>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="stroke-current flex-shrink-0 h-6 w-6"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
+                                        <span>{errorMessage}</span>
+                                    </div>
+                                </div>
+                            )}
                             <button
                                 className="btn btn-primary mb-4"
                                 onClick={handleClick}
+                                disabled={status === "checking"}
                             >
                                 Iniciar sesión
                             </button>
                             <button
+                                disabled={status === "checking"}
                                 className="btn btn-outline"
-                                onClick={handleClick}
+                                onClick={googleSignIn}
                             >
                                 <AiOutlineGoogle
                                     className="mr-2"
