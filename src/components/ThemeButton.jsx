@@ -1,12 +1,14 @@
-import { useState } from "react";
 import { ImSun } from "react-icons/im";
 import { FaRegMoon } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "../store/slices/theme/themeSlice";
 
 export const ThemeButton = () => {
-    const [darkMode, setDarkMode] = useState(true);
+    const { theme } = useSelector((state) => state.theme);
+    const dispatch = useDispatch();
     const handleThemeChange = () => {
-        setDarkMode(!darkMode);
-        if (darkMode) {
+        dispatch(setTheme(theme === "night" ? "winter" : "night"));
+        if (theme === "winter") {
             document.documentElement.setAttribute("data-theme", "winter");
         } else {
             document.documentElement.setAttribute("data-theme", "night");
@@ -17,7 +19,11 @@ export const ThemeButton = () => {
             className="btn btn-ghost rounded-full"
             onClick={handleThemeChange}
         >
-            {darkMode ? <ImSun size="1.5em" /> : <FaRegMoon size="1.5em" />}
+            {theme === "night" ? (
+                <ImSun size="1.5em" />
+            ) : (
+                <FaRegMoon size="1.5em" />
+            )}
         </button>
     );
 };
