@@ -5,11 +5,13 @@ import { FirebaseDB } from "../../../firebase/config";
 export const startNewProfile = ({ type }) => {
     return async (dispatch, getState) => {
         dispatch(loadingProfile());
-        const { uid } = getState().auth;
+        const { uid, displayName, photoURL } = getState().auth;
         const newProfile = {
             type,
             voted_type: null,
-            publications: 0,
+            publications: [],
+            displayName,
+            photoURL,
         };
 
         const newDoc = doc(collection(FirebaseDB, `users/${uid}/profile/`));

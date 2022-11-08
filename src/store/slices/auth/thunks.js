@@ -1,8 +1,10 @@
 import {
     logInWithEmailAndPassword,
+    logoutFirebase,
     registerUserWithEmailAndPassword,
     signInWithGoogle,
 } from "../../../firebase/providers";
+import { setProfile } from "../profile/profileSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
@@ -19,6 +21,7 @@ export const startGoogleSignIn = () => {
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
+            dispatch(setProfile({ type: null }));
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }
@@ -42,6 +45,7 @@ export const startCreateUserWithEmailAndPassword = ({
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
+            dispatch(setProfile({ type: null }));
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }
@@ -63,5 +67,12 @@ export const startLogInWithEmailAndPassword = ({ email, password }) => {
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }
+    };
+};
+
+export const startLogOut = () => {
+    return async (dispatch) => {
+        await logoutFirebase();
+        dispatch(logout());
     };
 };

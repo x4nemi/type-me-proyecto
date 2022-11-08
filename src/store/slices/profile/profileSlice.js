@@ -4,9 +4,11 @@ export const profileSlice = createSlice({
     name: "auth",
     initialState: {
         loading: false,
+        displayName: null,
+        photoURL: null,
         type: null,
         voted_type: null,
-        publications: 0,
+        publications: [],
         id: null,
     },
 
