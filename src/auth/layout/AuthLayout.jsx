@@ -1,10 +1,10 @@
 import React from "react";
 import { ThemeButton } from "../../components/ThemeButton";
 
-export const AuthLayout = ({ children, title = "" }) => {
+export const AuthLayout = ({ children, title = "", showButton = true }) => {
     return (
         <div className="bg-base-300">
-            <ThemeButton />
+            {showButton && <ThemeButton />}
 
             <div className="hero min-h-screen bg-base-300">
                 <div className="hero-content text-center">

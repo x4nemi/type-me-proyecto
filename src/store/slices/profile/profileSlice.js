@@ -10,6 +10,7 @@ export const profileSlice = createSlice({
         voted_type: null,
         publications: [],
         id: null,
+        uid: null,
     },
 
     reducers: {

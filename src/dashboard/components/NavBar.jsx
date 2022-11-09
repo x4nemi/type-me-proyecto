@@ -19,7 +19,7 @@ export const NavBar = () => {
         dispatch(startLogOut());
     };
     return (
-        <div className="mx-5 my-36 absolute">
+        <div className="mx-5 my-36 fixed">
             <ul className="menu bg-base-300 w-56 rounded-box">
                 <li className="items-center rounded-full">
                     <Avatar

@@ -4,7 +4,8 @@ import {
     registerUserWithEmailAndPassword,
     signInWithGoogle,
 } from "../../../firebase/providers";
-import { setProfile } from "../profile/profileSlice";
+import { loadProfile } from "../../../helpers/loadProfile";
+import { loadingProfile, setProfile } from "../profile/profileSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
@@ -21,7 +22,14 @@ export const startGoogleSignIn = () => {
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
-            dispatch(setProfile({ type: null }));
+            // dispatch(setProfile({ type: null }));
+
+            dispatch(loadingProfile());
+            const profile = await loadProfile(uid);
+
+            if (profile) {
+                dispatch(setProfile(profile));
+            }
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }
@@ -64,6 +72,11 @@ export const startLogInWithEmailAndPassword = ({ email, password }) => {
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
+
+            dispatch(loadingProfile());
+            const profile = await loadProfile(uid);
+
+            dispatch(setProfile(profile));
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }

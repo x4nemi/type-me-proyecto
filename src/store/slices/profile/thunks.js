@@ -12,6 +12,7 @@ export const startNewProfile = ({ type }) => {
             publications: [],
             displayName,
             photoURL,
+            uid,
         };
 
         const newDoc = doc(collection(FirebaseDB, `users/${uid}/profile/`));

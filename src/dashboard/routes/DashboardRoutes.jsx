@@ -4,6 +4,7 @@ import { NavBar } from "../components/NavBar";
 import { ChooseType } from "../pages/ChooseType";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DiscoverPage } from "../pages/DiscoverPage";
+import { PersonPage } from "../pages/PersonPage";
 
 export const DashboardRoutes = () => {
     const { type } = useSelector((state) => state.profile);
@@ -15,12 +16,16 @@ export const DashboardRoutes = () => {
                 </div>
             )}
 
-            <div className="ml-60">
+            <div className="ml-72">
                 <Routes>
                     {type !== null ? (
                         <>
                             <Route path="/" element={<DashboardPage />} />
                             <Route path="/people" element={<DiscoverPage />} />
+                            <Route
+                                path="/profile/:uid"
+                                element={<PersonPage />}
+                            />
                             <Route path="/*" element={<Navigate to="/" />} />
                         </>
                     ) : (

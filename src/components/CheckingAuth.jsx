@@ -1,10 +1,10 @@
 import { AuthLayout } from "../auth/layout/AuthLayout";
 
-export const CheckingAuth = () => {
+export const CheckingAuth = ({ showThemeButton = true }) => {
     const gif =
         "https://soongyu.carrd.co/assets/images/image01.gif?v87774859893651";
     return (
-        <AuthLayout>
+        <AuthLayout showButton={showThemeButton}>
             <div className="card bg-base-100">
                 <div className="card bg-base-100">
                     <div className="card-body">
