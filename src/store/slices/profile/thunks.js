@@ -7,19 +7,17 @@ export const startNewProfile = ({ type }) => {
         dispatch(loadingProfile());
         const { uid, displayName, photoURL } = getState().auth;
         const newProfile = {
-            type,
-            voted_type: null,
-            publications: [],
             displayName,
             photoURL,
+            type,
+            voted_type: null,
             uid,
         };
 
-        const newDoc = doc(collection(FirebaseDB, `users/${uid}/profile/`));
+        const profileRef = collection(FirebaseDB, `profile/`);
 
-        await setDoc(newDoc, newProfile);
+        await setDoc(doc(profileRef, `${uid}`), newProfile);
 
-        newProfile.id = newDoc.id;
         dispatch(setProfile(newProfile));
     };
 };

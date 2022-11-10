@@ -1,13 +1,13 @@
-import { collection, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
 import { FirebaseDB } from "../firebase/config";
 
 export const loadProfile = async (uid) => {
-    const profileRef = doc(collection(FirebaseDB, `users/${uid}/profile/`));
-    const profileDoc = await getDoc(profileRef);
+    // profile/uid
+    const docRef = doc(FirebaseDB, `profile/${uid}`);
 
-    if (profileDoc.exists()) {
-        return { ...profileDoc.data(), id: profileDoc.id };
-    } else {
-        return null;
-    }
+    const docSnap = await getDoc(docRef);
+
+    return {
+        ...docSnap.data(),
+    };
 };

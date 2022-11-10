@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
+import { startNewPublication } from "../../store/slices/publications/thunks";
 const types = [
     "ENFJ",
     "ENFP",
@@ -20,15 +22,36 @@ const types = [
 ];
 export const ModalPublication = ({ open, onDismiss }) => {
     const [description, setDescription] = useState("");
-    const [typeSelected, setType] = useState("");
+    const [typeSelected, setType] = useState(types[0]);
+
+    const dispatch = useDispatch();
+
     const handleType = (event) => {
         setType(event.target.value);
     };
 
+    const handleDescription = (event) => {
+        setDescription(event.target.value);
+    };
+
     const onSubmit = () => {
-        toast("Publicación creada con éxito", {
-            icon: "👍",
-        });
+        if (description.length > 10 && typeSelected.length > 0) {
+            toast("Publicación creada con éxito", {
+                icon: "👍",
+            });
+        } else {
+            toast("Debes llenar todos los campos", {
+                icon: "👎",
+            });
+
+            dispatch(
+                startNewPublication({
+                    description,
+                    voted_type: typeSelected,
+                })
+            );
+            onDismiss();
+        }
     };
     return (
         open && (
@@ -52,20 +75,18 @@ export const ModalPublication = ({ open, onDismiss }) => {
                                             votar
                                         </span>
                                     </label>
-                                    <div className="input-group flex">
-                                        <select
-                                            className="select select-bordered w-1/2"
-                                            value={typeSelected}
-                                            onChange={handleType}
-                                        >
-                                            {types.map((type) => (
-                                                <option key={type} value={type}>
-                                                    {type}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <button className="btn btn-square loading w-1/2"></button>
-                                    </div>
+                                    <select
+                                        className="select select-bordered w-full max-w-xs"
+                                        value={typeSelected}
+                                        onChange={handleType}
+                                    >
+                                        {types.map((type) => (
+                                            <option key={type} value={type}>
+                                                {type}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {/* <button className="btn btn-square loading w-1/2"></button> */}
                                 </div>
                                 <div className="form-control">
                                     <label className="label">
@@ -74,6 +95,7 @@ export const ModalPublication = ({ open, onDismiss }) => {
                                         </span>
                                     </label>
                                     <textarea
+                                        onChange={handleDescription}
                                         className="textarea textarea-bordered h-24"
                                         placeholder="Bio"
                                     ></textarea>

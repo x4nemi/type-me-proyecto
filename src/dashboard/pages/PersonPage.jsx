@@ -34,7 +34,6 @@ export const PersonPage = () => {
     const { displayName, photoURL, type } = active;
 
     const [openModal, setOpenModal] = useState(false);
-    console.log(openModal);
 
     useEffect(() => {
         return () => {

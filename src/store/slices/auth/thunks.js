@@ -53,7 +53,7 @@ export const startCreateUserWithEmailAndPassword = ({
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
-            dispatch(setProfile({ type: null }));
+            // dispatch(setProfile({ type: null, displayName, photoURL, uid, voted_type: null, publications: [] }));
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }
@@ -86,6 +86,16 @@ export const startLogInWithEmailAndPassword = ({ email, password }) => {
 export const startLogOut = () => {
     return async (dispatch) => {
         await logoutFirebase();
+        dispatch(
+            setProfile({
+                type: null,
+                displayName: null,
+                photoURL: null,
+                uid: null,
+                voted_type: null,
+                id: null,
+            })
+        );
         dispatch(logout());
     };
 };

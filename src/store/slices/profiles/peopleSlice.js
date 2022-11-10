@@ -61,4 +61,6 @@ export const {
     setActivePerson,
     updatePerson,
     clearPeople,
+    setPublication,
+    deletePublication,
 } = peopleSlice.actions;

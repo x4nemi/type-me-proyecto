@@ -2,25 +2,18 @@ import { collection, getDocs } from "firebase/firestore";
 import { FirebaseDB } from "../firebase/config";
 
 export const getProfiles = async () => {
-    const collectionRef = collection(FirebaseDB, "users");
+    // profile/uid
 
-    const docs = await getDocs(collectionRef);
+    const profilesRef = collection(FirebaseDB, `profile/`);
+    const profilesSnap = await getDocs(profilesRef);
+    const profiles = [];
 
-    const peopleId = [];
-
-    docs.forEach((doc) => {
-        peopleId.push({ id: doc.id });
+    profilesSnap.forEach((profile) => {
+        profiles.push({
+            ...profile.data(),
+            id: profile.id,
+        });
     });
 
-    const people = [];
-
-    for (const person of peopleId) {
-        const personRef = collection(FirebaseDB, `users/${person.id}/profile/`);
-        const personDoc = await getDocs(personRef);
-        personDoc.forEach((doc) => {
-            people.push({ ...doc.data(), id: doc.id });
-        });
-    }
-
-    return people;
+    return profiles;
 };

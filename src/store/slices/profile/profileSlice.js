@@ -8,8 +8,6 @@ export const profileSlice = createSlice({
         photoURL: null,
         type: null,
         voted_type: null,
-        publications: [],
-        id: null,
         uid: null,
     },
 
@@ -18,7 +16,9 @@ export const profileSlice = createSlice({
             state.loading = false;
             state.type = action.payload.type;
             state.voted_type = action.payload.voted_type;
-            state.publications = action.payload.publications;
+            state.displayName = action.payload.displayName;
+            state.photoURL = action.payload.photoURL;
+            state.uid = action.payload.uid;
             state.id = action.payload.id;
         },
         loadingProfile: (state) => {

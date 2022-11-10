@@ -23,60 +23,21 @@ export const DiscoverPage = () => {
                         Descubre gente 🌎
                     </h1>
                     <div className="grid xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 place-items-center">
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
-                        {people.map((person) => (
-                            <ProfileItem
-                                key={person.id}
-                                id={person.id}
-                                displayName={person.displayName}
-                                photoURL={person.photoURL}
-                                type={person.type}
-                            />
-                        ))}
+                        {people.lenght === 0 ? (
+                            <p className="text-2xl font-bold">
+                                No hay gente para mostrar
+                            </p>
+                        ) : (
+                            people.map((person) => (
+                                <ProfileItem
+                                    key={person.id}
+                                    id={person.id}
+                                    displayName={person.displayName}
+                                    photoURL={person.photoURL}
+                                    type={person.type}
+                                />
+                            ))
+                        )}
                     </div>
                     {/* <div className="flex justify-center mt-4">
                         <div className="btn-group grid grid-cols-2 items-center">

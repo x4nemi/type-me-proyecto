@@ -4,11 +4,13 @@ import { profileSlice } from "./slices/profile/profileSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import { peopleSlice } from "./slices/profiles/peopleSlice";
+import { publicationsSlice } from "./slices/publications/publicationsSlice";
 
 const reducers = combineReducers({
     auth: authSlice.reducer,
     profile: profileSlice.reducer,
     people: peopleSlice.reducer,
+    publications: publicationsSlice.reducer,
 });
 
 const persistConfig = {
