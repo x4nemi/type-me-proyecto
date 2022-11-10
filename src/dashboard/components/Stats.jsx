@@ -1,6 +1,12 @@
 import { Avatar } from "./Avatar";
 
-export const Stats = ({ displayName, photoURL, type, nPublicaciones = 0 }) => {
+export const Stats = ({
+    displayName,
+    photoURL,
+    type,
+    nPublicaciones = 0,
+    votedType,
+}) => {
     return (
         <div className="stats shadow-xl mt-4 bg-base-100 p-4 xl:stats-horizontal md:stats-vertical w-full sm:stats-vertical flex-shrink">
             <div className="stat">
@@ -58,7 +64,7 @@ export const Stats = ({ displayName, photoURL, type, nPublicaciones = 0 }) => {
                 </div>
                 <div className="stat-value text-primary">
                     <span className="bg-yellow-100 text-yellow-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900">
-                        {type}
+                        {votedType}
                     </span>
                 </div>
             </div>

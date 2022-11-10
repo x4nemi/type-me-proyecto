@@ -5,6 +5,7 @@ export const publicationsSlice = createSlice({
     initialState: {
         loading: false,
         publications: [],
+        id: null,
     },
 
     reducers: {

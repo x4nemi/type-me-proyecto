@@ -1,20 +1,14 @@
-import { collection, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { FirebaseDB } from "../firebase/config";
 
 export const loadPublications = async (uid) => {
-    const publicationsRef = collection(
-        FirebaseDB,
-        `users/${uid}/publications/`
-    );
-    const publicationsSnap = await getDocs(publicationsRef);
-    const publications = [];
+    // publications/uid
+    const docRef = doc(FirebaseDB, `publications/${uid}`);
 
-    publicationsSnap.forEach((publication) => {
-        publications.push({
-            ...publication.data(),
-            id: publication.id,
-        });
-    });
+    const docSnap = await getDoc(docRef);
 
-    return publications;
+    if (docSnap.exists()) {
+        return docSnap.data().publications;
+    }
+    return [];
 };

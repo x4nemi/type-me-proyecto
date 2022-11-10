@@ -19,7 +19,7 @@ export const peopleSlice = createSlice({
 
         setActivePerson: (state, action) => {
             state.active = state.people.find(
-                (person) => person.id === action.payload.id
+                (person) => person.uid === action.payload.uid
             );
         },
 

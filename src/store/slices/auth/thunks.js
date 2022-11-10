@@ -10,6 +10,8 @@ import {
     loadingProfile,
     setProfile,
 } from "../profile/profileSlice";
+import { setPublication } from "../profiles/peopleSlice";
+import { setPublications } from "../publications/publicationsSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
@@ -98,5 +100,6 @@ export const startLogOut = () => {
             })
         );
         dispatch(logout());
+        dispatch(setPublications([]));
     };
 };

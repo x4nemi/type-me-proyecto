@@ -9,36 +9,35 @@ import {
     setPublications,
 } from "./publicationsSlice";
 
-export const startNewPublication = (publication) => {
+export const startNewPublication = ({ voted_type, description }) => {
     return async (dispatch, getState) => {
-        dispatch(loadingPublications());
+        const { uid, displayName, type, photoURL } = getState().profile;
         const { active } = getState().people;
 
-        const { uid, displayName, photoURL, type } = getState().profile;
+        const { publications } = getState().publications;
         const newPublication = {
-            ...publication,
+            voted_type,
+            description,
             uid,
             displayName,
             photoURL,
             type,
+            id: publications.length + 1,
         };
 
-        const newDoc = doc(
-            collection(FirebaseDB, `users/${active.uid}/publications/`)
-        );
+        const publicationRef = collection(FirebaseDB, `publications/`);
 
-        await setDoc(newDoc, newPublication);
-
-        newPublication.id = newDoc.id;
+        await setDoc(doc(publicationRef, `${active.uid}`), {
+            publications: [...publications, newPublication],
+        });
         dispatch(setNewPublication(newPublication));
     };
 };
 
-export const startLoadingPublications = () => {
+export const startLoadingPublications = ({ uid }) => {
     return async (dispatch, getState) => {
         dispatch(loadingPublications());
-        const { active } = getState().people;
-        const publications = await loadPublications(active.uid);
+        const publications = await loadPublications(uid);
         dispatch(setPublications(publications));
     };
 };

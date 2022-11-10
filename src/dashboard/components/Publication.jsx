@@ -37,6 +37,8 @@ export const Publication = ({
                                         className="rounded-full"
                                         src={photoURL}
                                         alt={displayName}
+                                        width="20"
+                                        referrerPolicy="no-referrer"
                                     />
                                 ) : (
                                     <span className="text-sm">{initials}</span>
