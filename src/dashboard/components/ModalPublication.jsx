@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
-import { startNewPublication } from "../../store/slices/publications/thunks";
+import { setActivePublication } from "../../store/slices/publications/publicationsSlice";
+import {
+    startNewPublication,
+    startSavingPublication,
+} from "../../store/slices/publications/thunks";
 const types = [
     "ENFJ",
     "ENFP",
@@ -21,6 +25,7 @@ const types = [
     "ISTP",
 ];
 export const ModalPublication = ({ open, onDismiss }) => {
+    const { id, publications } = useSelector((state) => state.publications);
     const [description, setDescription] = useState("");
     const [typeSelected, setType] = useState(types[0]);
 
@@ -34,17 +39,34 @@ export const ModalPublication = ({ open, onDismiss }) => {
         setDescription(event.target.value);
     };
 
+    const closeModal = () => {
+        dispatch(setActivePublication("-1"));
+        onDismiss();
+    };
+
     const onSubmit = () => {
         if (description.length > 10) {
             toast("Publicación creada con éxito", {
                 icon: "👍",
             });
-            dispatch(
-                startNewPublication({
-                    description,
-                    voted_type: typeSelected,
-                })
-            );
+
+            if (id !== "-1") {
+                dispatch(
+                    startSavingPublication({
+                        id,
+                        description,
+                        voted_type: typeSelected,
+                    })
+                );
+            } else {
+                dispatch(
+                    startNewPublication({
+                        description,
+                        voted_type: typeSelected,
+                    })
+                );
+            }
+            dispatch(setActivePublication("-1"));
             onDismiss();
         } else {
             toast("La descripción debe ser mayor de 10 letras", {
@@ -52,6 +74,20 @@ export const ModalPublication = ({ open, onDismiss }) => {
             });
         }
     };
+
+    useEffect(() => {
+        if (id !== "-1") {
+            const publication = publications.find(
+                (publication) => publication.id === id
+            );
+            setDescription(publication.description);
+            setType(publication.voted_type);
+        } else {
+            setDescription("");
+            setType(types[0]);
+        }
+    }, [id]);
+
     return (
         open && (
             <>
@@ -95,6 +131,7 @@ export const ModalPublication = ({ open, onDismiss }) => {
                                     </label>
                                     <textarea
                                         onChange={handleDescription}
+                                        value={description}
                                         className="textarea textarea-bordered h-24"
                                         placeholder="Yo pienso que..."
                                     ></textarea>
@@ -105,16 +142,18 @@ export const ModalPublication = ({ open, onDismiss }) => {
                                 <button
                                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                     type="button"
-                                    onClick={() => onDismiss()}
+                                    onClick={() => closeModal()}
                                 >
-                                    Close
+                                    Cerrar
                                 </button>
                                 <button
                                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                     type="button"
                                     onClick={() => onSubmit()}
                                 >
-                                    Save Changes
+                                    {id !== "-1"
+                                        ? "Guardar publicación"
+                                        : "Crear publicación"}
                                 </button>
                             </div>
                         </div>

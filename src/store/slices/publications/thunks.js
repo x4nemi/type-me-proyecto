@@ -7,6 +7,7 @@ import {
     loadingPublications,
     setNewPublication,
     setPublications,
+    updatePublication,
 } from "./publicationsSlice";
 
 export const startNewPublication = ({ voted_type, description }) => {
@@ -22,7 +23,7 @@ export const startNewPublication = ({ voted_type, description }) => {
             displayName,
             photoURL,
             type,
-            id: publications.length + 1,
+            id: Math.random().toString(16).slice(2),
         };
 
         const publicationRef = collection(FirebaseDB, `publications/`);
@@ -42,21 +43,35 @@ export const startLoadingPublications = ({ uid }) => {
     };
 };
 
-export const startSavingPublication = (publication) => {
+export const startSavingPublication = ({ id, description, voted_type }) => {
     return async (dispatch, getState) => {
         dispatch(loadingPublications());
-        const { active } = getState().people;
-        const publicationToFirestore = { ...publication };
-        delete publicationToFirestore.id;
 
-        const publicationRef = doc(
-            collection(FirebaseDB, `users/${active.uid}/publications/`),
-            publication.id
+        const { active } = getState().people;
+
+        const { publications } = getState().publications;
+        const publication = publications.find(
+            (publication) => publication.id === id
         );
 
-        await setDoc(publicationRef, publicationToFirestore);
+        const newPublication = {
+            ...publication,
+            description,
+            voted_type,
+        };
 
-        dispatch(startLoadingPublications());
+        const publicationRef = collection(FirebaseDB, `publications/`);
+
+        await setDoc(doc(publicationRef, `${active.uid}`), {
+            publications: publications.map((publication) => {
+                if (publication.id === id) {
+                    return newPublication;
+                }
+                return publication;
+            }),
+        });
+
+        dispatch(updatePublication(newPublication));
     };
 };
 
@@ -64,12 +79,15 @@ export const startDeletingPublication = (id) => {
     return async (dispatch, getState) => {
         dispatch(loadingPublications());
         const { active } = getState().people;
-        const publicationRef = doc(
-            collection(FirebaseDB, `users/${active.uid}/publications/`),
-            id
-        );
+        const { publications } = getState().publications;
 
-        await deleteDoc(publicationRef);
+        const publicationRef = collection(FirebaseDB, `publications/`);
+
+        await setDoc(doc(publicationRef, `${active.uid}`), {
+            publications: publications.filter(
+                (publication) => publication.id !== id
+            ),
+        });
 
         dispatch(deletePublication(id));
     };

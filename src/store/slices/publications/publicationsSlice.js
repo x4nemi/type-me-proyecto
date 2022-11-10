@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const publicationsSlice = createSlice({
-    name: "people",
+    name: "publications",
     initialState: {
         loading: false,
         publications: [],
-        id: null,
+        id: "-1",
     },
 
     reducers: {
@@ -17,6 +17,10 @@ export const publicationsSlice = createSlice({
         setNewPublication: (state, action) => {
             state.loading = false;
             state.publications = [...state.publications, action.payload];
+        },
+
+        setActivePublication: (state, action) => {
+            state.id = action.payload;
         },
         updatePublication: (state, action) => {
             state.publications = state.publications.map((publication) => {
@@ -46,4 +50,5 @@ export const {
     updatePublication,
     deletePublication,
     loadingPublications,
+    setActivePublication,
 } = publicationsSlice.actions;

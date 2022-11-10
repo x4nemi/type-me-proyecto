@@ -32,22 +32,6 @@ export const peopleSlice = createSlice({
                 return person;
             });
         },
-
-        setPublication: (state, action) => {
-            state.loading = false;
-            state.active.publications = [
-                ...state.active.publications,
-                action.payload,
-            ];
-        },
-
-        deletePublication: (state, action) => {
-            state.loading = false;
-            state.active.publications = state.active.publications.filter(
-                (publication) => publication.id !== action.payload
-            );
-        },
-
         clearPeople: (state) => {
             state.people = [];
             state.active = null;
@@ -61,6 +45,4 @@ export const {
     setActivePerson,
     updatePerson,
     clearPeople,
-    setPublication,
-    deletePublication,
 } = peopleSlice.actions;

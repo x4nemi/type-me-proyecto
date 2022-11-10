@@ -10,7 +10,6 @@ import {
     loadingProfile,
     setProfile,
 } from "../profile/profileSlice";
-import { setPublication } from "../profiles/peopleSlice";
 import { setPublications } from "../publications/publicationsSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 

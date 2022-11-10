@@ -1,40 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Publication } from "../components/Publication";
-import {
-    setActivePerson,
-    setPublication,
-} from "../../store/slices/profiles/peopleSlice";
-import { Avatar } from "../components/Avatar";
-import { Rating } from "../components/Rating";
+import { setActivePerson } from "../../store/slices/profiles/peopleSlice";
 import { Stats } from "../components/Stats";
 import { ModalPublication } from "../components/ModalPublication";
-import { startLoadingPublications } from "../../store/slices/publications/thunks";
-import { setPublications } from "../../store/slices/publications/publicationsSlice";
+import {
+    startDeletingPublication,
+    startLoadingPublications,
+} from "../../store/slices/publications/thunks";
+import {
+    setActivePublication,
+    setPublications,
+} from "../../store/slices/publications/publicationsSlice";
 import { getMajorVotedType } from "../../helpers/getMajorVotedType";
 import { FaRegSadTear } from "react-icons/fa";
-
-const publicaciones = [
-    {
-        displayName: "Juan",
-        photoURL: null,
-        uid: "1",
-        id: "1",
-        type: "INTJ",
-        description: "Hola, soy Juan",
-        voted_type: "INTJ",
-    },
-    {
-        displayName: "Alondra",
-        uid: "2",
-        id: "2",
-        photoURL: null,
-        type: "ENFP",
-        description: "Hola, soy Alondra",
-        voted_type: "ENFP",
-    },
-];
 
 export const PersonPage = () => {
     const { active = { displayName: "", photoURL: "", type: "" } } =
@@ -43,21 +23,36 @@ export const PersonPage = () => {
     const { displayName = "", photoURL = "", type = "" } = active;
     const { publications } = useSelector((state) => state.publications);
 
+    const { uid: mainUid } = useSelector((state) => state.auth);
+
     const [votedType, setVotedType] = useState(type);
 
     const dispatch = useDispatch();
 
     const [openModal, setOpenModal] = useState(false);
 
+    const editAction = (id) => {
+        dispatch(setActivePublication(id));
+        setOpenModal(true);
+    };
+
+    const deleteAction = (id) => {
+        dispatch(startDeletingPublication(id));
+    };
+
+    useEffect(() => {
+        return () => {
+            dispatch(setActivePerson("1"));
+            dispatch(setPublications([]));
+            dispatch(setActivePublication("-1"));
+        };
+    }, []);
+
     useEffect(() => {
         dispatch(startLoadingPublications({ uid }));
 
         dispatch(setActivePerson({ uid }));
-        return () => {
-            dispatch(setActivePerson("1"));
-            dispatch(setPublications([]));
-        };
-    }, []);
+    }, [uid]);
 
     useEffect(() => {
         if (publications.length > 0) {
@@ -76,12 +71,19 @@ export const PersonPage = () => {
                 nPublicaciones={publications.length}
             />
 
-            <button className="btn" onClick={() => setOpenModal(true)}>
-                Abrir modal
-            </button>
+            {mainUid !== uid && (
+                <div className="flex justify-center mt-10">
+                    <button
+                        className="btn btn-accent"
+                        onClick={() => setOpenModal(true)}
+                    >
+                        Hacer publicación
+                    </button>
+                </div>
+            )}
 
             {publications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center mt-20">
+                <div className="flex flex-col items-center justify-center mt-10">
                     <h1 className="text-5xl font-bold text-center">
                         No hay publicaciones
                     </h1>
@@ -90,7 +92,16 @@ export const PersonPage = () => {
             ) : (
                 <div className="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-2 mt-10 mr-10 place-items-center">
                     {publications.map((publication) => (
-                        <Publication key={publication.id} {...publication} />
+                        <Publication
+                            key={publication.id}
+                            {...publication}
+                            canDelete={
+                                mainUid === uid || mainUid === publication.uid
+                            }
+                            canEdit={publication.uid === mainUid}
+                            editAction={() => editAction(publication.id)}
+                            deleteAction={() => deleteAction(publication.id)}
+                        />
                     ))}
                 </div>
             )}

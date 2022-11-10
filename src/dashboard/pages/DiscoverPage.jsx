@@ -6,6 +6,7 @@ import { startLoadingPeople } from "../../store/slices/profiles/thunks";
 
 export const DiscoverPage = () => {
     const { people, loading } = useSelector((state) => state.people);
+    const { uid } = useSelector((state) => state.auth);
 
     const dispatch = useDispatch();
 
@@ -28,25 +29,19 @@ export const DiscoverPage = () => {
                                 No hay gente para mostrar
                             </p>
                         ) : (
-                            people.map((person) => (
-                                <ProfileItem
-                                    key={person.id}
-                                    id={person.id}
-                                    displayName={person.displayName}
-                                    photoURL={person.photoURL}
-                                    type={person.type}
-                                />
-                            ))
+                            people
+                                .filter((person) => person.uid !== uid)
+                                .map((person) => (
+                                    <ProfileItem
+                                        key={person.id}
+                                        id={person.id}
+                                        displayName={person.displayName}
+                                        photoURL={person.photoURL}
+                                        type={person.type}
+                                    />
+                                ))
                         )}
                     </div>
-                    {/* <div className="flex justify-center mt-4">
-                        <div className="btn-group grid grid-cols-2 items-center">
-                            <button className="btn btn-outline">
-                                Previous page
-                            </button>
-                            <button className="btn btn-outline">Next</button>
-                        </div>
-                    </div> */}
                 </>
             )}
         </div>

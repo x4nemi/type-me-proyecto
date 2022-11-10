@@ -9,7 +9,7 @@ import { RiHome4Line } from "react-icons/ri";
 
 export const NavBar = () => {
     const { type } = useSelector((state) => state.profile);
-    const { displayName, photoURL } = useSelector((state) => state.auth);
+    const { displayName, photoURL, uid } = useSelector((state) => state.auth);
 
     const dispatch = useDispatch();
 
@@ -22,11 +22,13 @@ export const NavBar = () => {
         <div className="mx-5 my-36 fixed">
             <ul className="menu bg-base-300 w-56 rounded-box">
                 <li className="items-center rounded-full">
-                    <Avatar
-                        displayName={displayName}
-                        type={type}
-                        photoURL={photoURL}
-                    />
+                    <Link to={`/profile/${uid}`}>
+                        <Avatar
+                            displayName={displayName}
+                            type={type}
+                            photoURL={photoURL}
+                        />
+                    </Link>
                 </li>
                 <li className={`${pathname === "/" ? "bordered" : ""}`}>
                     <Link to="/">

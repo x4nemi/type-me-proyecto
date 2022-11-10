@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { setActivePerson } from "../../store/slices/profiles/peopleSlice";
+import { BsThreeDots } from "react-icons/bs";
 
 export const Publication = ({
     displayName = "Ximena",
@@ -11,6 +12,10 @@ export const Publication = ({
     description = "Hola, soy Ximena",
     voted_type = "ENFP",
     id = "2",
+    canEdit = true,
+    canDelete = true,
+    editAction,
+    deleteAction,
 }) => {
     const dispatch = useDispatch();
     const initials = useMemo(() => {
@@ -50,9 +55,42 @@ export const Publication = ({
                     </h2>
                 </Link>
                 <p>{description}</p>
-                <div className="card-actions justify-end">
-                    Voto:
-                    <div className="badge badge-secondary">{voted_type}</div>
+                <div className="card-actions justify-between">
+                    {(canDelete || canEdit) && (
+                        <div className="dropdown">
+                            <label
+                                tabIndex={0}
+                                className="btn btn-xs btn-active btn-ghost"
+                            >
+                                <BsThreeDots />
+                            </label>
+                            <ul
+                                tabIndex={0}
+                                className="dropdown-content menu p-1 shadow bg-base-100 rounded-box w-30"
+                            >
+                                {canEdit && (
+                                    <li>
+                                        <a onClick={() => editAction()}>
+                                            Editar
+                                        </a>
+                                    </li>
+                                )}
+                                {canDelete && (
+                                    <li>
+                                        <a onClick={() => deleteAction()}>
+                                            Eliminar
+                                        </a>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    )}
+                    <div>
+                        Voto:{" "}
+                        <div className="badge badge-secondary">
+                            {voted_type}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
