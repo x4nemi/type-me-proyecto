@@ -8,7 +8,7 @@ export const Stats = ({
     votedType,
 }) => {
     return (
-        <div className="stats shadow-xl mt-4 bg-base-100 p-4 xl:stats-horizontal md:stats-vertical w-full sm:stats-vertical flex-shrink">
+        <div className="stats shadow-xl mt-4 bg-base-100 p-4 xl:stats-horizontal md:stats-vertical w-full sm:stats-vertical min-[500px]:stats-vertical flex-shrink">
             <div className="stat">
                 <div className="stat-figure text-secondary">
                     <Avatar displayName={displayName} photoURL={photoURL} />

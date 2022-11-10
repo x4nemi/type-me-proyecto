@@ -41,6 +41,12 @@ export const publicationsSlice = createSlice({
         loadingPublications: (state) => {
             state.loading = true;
         },
+
+        clearStatePublications: (state) => {
+            state.publications = [];
+            state.id = "-1";
+            state.loading = false;
+        },
     },
 });
 
@@ -51,4 +57,5 @@ export const {
     deletePublication,
     loadingPublications,
     setActivePublication,
+    clearStatePublications,
 } = publicationsSlice.actions;

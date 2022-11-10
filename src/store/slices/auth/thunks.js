@@ -10,7 +10,11 @@ import {
     loadingProfile,
     setProfile,
 } from "../profile/profileSlice";
-import { setPublications } from "../publications/publicationsSlice";
+import { clearPeople } from "../profiles/peopleSlice";
+import {
+    clearStatePublications,
+    setPublications,
+} from "../publications/publicationsSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
@@ -98,7 +102,12 @@ export const startLogOut = () => {
                 id: null,
             })
         );
-        dispatch(logout());
-        dispatch(setPublications([]));
+        dispatch(
+            logout({
+                errorMessage: "",
+            })
+        );
+        dispatch(clearPeople());
+        dispatch(clearStatePublications());
     };
 };

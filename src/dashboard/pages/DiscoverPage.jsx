@@ -24,7 +24,7 @@ export const DiscoverPage = () => {
                         Descubre gente 🌎
                     </h1>
                     <div className="grid xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 place-items-center">
-                        {people.lenght === 0 ? (
+                        {people.length === 0 ? (
                             <p className="text-2xl font-bold">
                                 No hay gente para mostrar
                             </p>

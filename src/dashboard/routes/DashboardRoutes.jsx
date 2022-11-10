@@ -16,7 +16,11 @@ export const DashboardRoutes = () => {
                 </div>
             )}
 
-            <div className="ml-72 container">
+            <div
+                className={` ${
+                    type !== null ? "ml-48 my-10 mr-10 container" : "container"
+                }`}
+            >
                 <Routes>
                     {type !== null ? (
                         <>

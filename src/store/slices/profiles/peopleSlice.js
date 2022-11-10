@@ -35,6 +35,7 @@ export const peopleSlice = createSlice({
         clearPeople: (state) => {
             state.people = [];
             state.active = null;
+            state.loading = false;
         },
     },
 });

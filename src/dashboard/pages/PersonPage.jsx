@@ -62,7 +62,7 @@ export const PersonPage = () => {
         }
     }, [publications]);
     return (
-        <div className="items-center justify-center h-screen">
+        <div className="items-center justify-center">
             <Stats
                 displayName={displayName}
                 photoURL={photoURL}
