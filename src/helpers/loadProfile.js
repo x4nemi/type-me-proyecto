@@ -7,7 +7,15 @@ export const loadProfile = async (uid) => {
 
     const docSnap = await getDoc(docRef);
 
-    return {
-        ...docSnap.data(),
-    };
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+        return {
+            type: null,
+            voted_type: null,
+            displayName: null,
+            photoURL: null,
+            uid: null,
+        };
+    }
 };

@@ -5,7 +5,11 @@ import {
     signInWithGoogle,
 } from "../../../firebase/providers";
 import { loadProfile } from "../../../helpers/loadProfile";
-import { loadingProfile, setProfile } from "../profile/profileSlice";
+import {
+    cancelLoadingProfile,
+    loadingProfile,
+    setProfile,
+} from "../profile/profileSlice";
 import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
@@ -22,14 +26,11 @@ export const startGoogleSignIn = () => {
         if (result.ok) {
             const { uid, email, displayName, photoURL } = result;
             dispatch(login({ uid, email, displayName, photoURL }));
-            // dispatch(setProfile({ type: null }));
 
             dispatch(loadingProfile());
             const profile = await loadProfile(uid);
 
-            if (profile) {
-                dispatch(setProfile(profile));
-            }
+            dispatch(setProfile(profile));
         } else {
             dispatch(logout({ errorMessage: result.message }));
         }

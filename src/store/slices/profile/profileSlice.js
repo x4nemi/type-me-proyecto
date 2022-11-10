@@ -24,7 +24,11 @@ export const profileSlice = createSlice({
         loadingProfile: (state) => {
             state.loading = true;
         },
+        cancelLoadingProfile: (state) => {
+            state.loading = false;
+        },
     },
 });
 
-export const { setProfile, loadingProfile } = profileSlice.actions;
+export const { setProfile, loadingProfile, cancelLoadingProfile } =
+    profileSlice.actions;
