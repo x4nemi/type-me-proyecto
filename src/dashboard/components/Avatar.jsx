@@ -21,7 +21,7 @@ export const Avatar = ({ displayName, photoURL, type }) => {
                 />
             ) : (
                 <div
-                    className={`bg-primary-content text-neutral-content rounded-full w-20 ring`}
+                    className={`bg-primary-content text-neutral-content rounded-full w-16 ring`}
                 >
                     <span className="text-3xl">{initials}</span>
                 </div>

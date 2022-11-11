@@ -49,12 +49,12 @@ export const ProfileItem = ({ displayName, photoURL, type, id }) => {
 
     return (
         <Link
-            className="card card-side flex bg-base-300 mb-1 w-80 cursor-pointer hover:bg-base-200 transition
+            className="card card-side flex bg-base-300 mb-1 w-full cursor-pointer hover:bg-base-200 transition
             duration-200 ease-in-out"
             to={`/profile/${id}`}
             onClick={handleSetActivePerson}
         >
-            <figure className="self-center ml-8 p-1">
+            <figure className="self-center ml-4 p-1">
                 <Avatar displayName={name} photoURL={photoURL} type={type} />
             </figure>
             <div className="card-body">

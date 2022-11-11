@@ -71,7 +71,7 @@ export const PersonPage = () => {
         }
     }, [publications]);
     return (
-        <div className="items-center justify-center">
+        <div className="items-center justify-center grid grid-cols-1">
             <Stats
                 displayName={displayName}
                 photoURL={photoURL}

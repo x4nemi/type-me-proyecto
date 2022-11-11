@@ -7,6 +7,7 @@ import { Avatar } from "./Avatar";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { RiHome4Line } from "react-icons/ri";
 import { BsFillGearFill } from "react-icons/bs";
+import { setActivePerson } from "../../store/slices/profiles/peopleSlice";
 
 export const NavBar = () => {
     const { type } = useSelector((state) => state.profile);
@@ -19,11 +20,15 @@ export const NavBar = () => {
     const handleLogout = () => {
         dispatch(startLogOut());
     };
+
+    const handleActive = () => {
+        dispatch(setActivePerson({ id: uid }));
+    };
     return (
         <div className="mx-5 my-36 fixed">
             <ul className="menu bg-base-300 w-44 rounded-box">
                 <li className="items-center rounded-full">
-                    <Link to={`/profile/${uid}`}>
+                    <Link to={`/profile/${uid}`} onClick={() => handleActive()}>
                         <Avatar
                             displayName={displayName}
                             type={type}

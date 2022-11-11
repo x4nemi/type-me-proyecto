@@ -15,11 +15,11 @@ export const DiscoverPage = () => {
     }, [dispatch]);
 
     return (
-        <div className="h-fit w-full my-20">
+        <div className="grid grid-cols-1">
             {loading ? (
                 <CheckingAuth />
             ) : (
-                <>
+                <div>
                     <h1 className="text-3xl font-bold mb-4">
                         Descubre gente 🌎
                     </h1>
@@ -42,7 +42,7 @@ export const DiscoverPage = () => {
                                 ))
                         )}
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
