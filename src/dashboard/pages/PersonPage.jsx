@@ -22,6 +22,7 @@ export const PersonPage = () => {
     const { uid } = useParams();
     const { displayName = "", photoURL = "", type = "" } = active;
     const { publications } = useSelector((state) => state.publications);
+    const { people } = useSelector((state) => state.people);
 
     const { uid: mainUid } = useSelector((state) => state.auth);
 
@@ -52,7 +53,15 @@ export const PersonPage = () => {
         dispatch(startLoadingPublications({ uid }));
 
         dispatch(setActivePerson({ uid }));
+
+        //if active is null, redirect to discover
     }, [uid]);
+
+    useEffect(() => {
+        if (!people.some((person) => person.uid === uid)) {
+            window.location.href = "/discover";
+        }
+    }, [people]);
 
     useEffect(() => {
         if (publications.length > 0) {
