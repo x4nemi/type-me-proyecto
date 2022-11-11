@@ -6,6 +6,7 @@ import { startLogOut } from "../../store/slices/auth/thunks";
 import { Avatar } from "./Avatar";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { RiHome4Line } from "react-icons/ri";
+import { BsFillGearFill } from "react-icons/bs";
 
 export const NavBar = () => {
     const { type } = useSelector((state) => state.profile);
@@ -20,7 +21,7 @@ export const NavBar = () => {
     };
     return (
         <div className="mx-5 my-36 fixed">
-            <ul className="menu bg-base-300 w-36 rounded-box">
+            <ul className="menu bg-base-300 w-44 rounded-box">
                 <li className="items-center rounded-full">
                     <Link to={`/profile/${uid}`}>
                         <Avatar
@@ -41,16 +42,22 @@ export const NavBar = () => {
                         <MdOutlinePeopleAlt /> Personas
                     </Link>
                 </li>
-                <li className="mt-96 items-center rounded-full">
+                <li className={`${pathname === "/config" ? "bordered" : ""}`}>
+                    <Link to="/config">
+                        <BsFillGearFill />
+                        Configuración
+                    </Link>
+                </li>
+                <li className="mt-80 items-center rounded-full">
                     <ThemeButton />
                 </li>
                 <li>
-                    <button
+                    <Link
                         className="btn btn-error"
                         onClick={() => handleLogout()}
                     >
                         <HiOutlineLogout size={20} /> Salir
-                    </button>
+                    </Link>
                 </li>
             </ul>
         </div>
