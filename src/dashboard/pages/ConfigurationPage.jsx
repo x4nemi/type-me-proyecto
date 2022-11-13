@@ -1,8 +1,13 @@
 import { useForm } from "../../hooks";
 import { Avatar } from "../components/Avatar";
 import { toast, ToastContainer } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+
+import { AiOutlineDelete, AiOutlineFolderAdd } from "react-icons/ai";
+import { BiEdit } from "react-icons/bi";
+import { startUpdateUser } from "../../store/slices/auth/thunks";
+import { setError } from "../../store/slices/auth/authSlice";
 
 const types = [
     "ENFJ",
@@ -28,13 +33,21 @@ const formValidations = {
         (value) => value.length >= 3,
         "El nombre debe de tener más de 3 letras",
     ],
-    email: [(value) => value.includes("@"), "El correo debe de tener una @"],
+    email: [
+        (value) =>
+            value
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                ),
+        "El formato del email no es válido",
+    ],
     oldPassword: [
-        (value) => value.length === 0 || value.length >= 6,
-        "La vieja contraseña debe de tener más de 6 letras",
+        (value) => value.length >= 6,
+        "La contraseña actual debe de tener más de 6 letras",
     ],
     newPassword: [
-        (value) => value.length >= 6,
+        (value) => value.length >= 6 || value.length === 0,
         "La nueva contraseña debe de tener más de 6 letras",
     ],
 };
@@ -51,9 +64,12 @@ export const ConfigurationPage = () => {
         displayName,
         photoURL,
         email: oldEmail,
+        status,
+        errorMessage,
     } = useSelector((state) => state.auth);
 
-    const { type: oldType } = useSelector((state) => state.profile);
+    const { type: oldType, loading } = useSelector((state) => state.profile);
+    const dispatch = useDispatch();
 
     const {
         type,
@@ -87,6 +103,14 @@ export const ConfigurationPage = () => {
             toast("Formulario bien", {
                 icon: "🚀",
             });
+            dispatch(
+                startUpdateUser({
+                    type,
+                    displayName: name,
+                    photoURL,
+                    password: oldPassword,
+                })
+            );
         } else {
             toast(
                 <div>
@@ -102,77 +126,95 @@ export const ConfigurationPage = () => {
             );
         }
     };
+
     return (
         <div className="grid grid-cols-1">
             <div className="card ring">
-                <div className="card-body">
-                    <h2 className="text-2xl font-bold">
-                        Configuración de la cuenta
-                    </h2>
-                    <div className="form-control mb-4">
-                        <label className="label">
-                            <span className="label-text">Imagen</span>
-                        </label>
-
-                        <div className="dropdown self-center">
-                            <label
-                                tabIndex={0}
-                                className="btn btn-active btn-lg btn-ghost btn-circles h-20 w-20 rounded-full"
-                            >
-                                <Avatar
-                                    tabIndex={0}
-                                    displayName={displayName}
-                                />
+                {status === "checking" || loading ? (
+                    <div className="flex justify-center items-center h-96">
+                        <div className="loader"></div>
+                    </div>
+                ) : (
+                    <div className="card-body">
+                        <h2 className="text-2xl font-bold">
+                            Configuración de la cuenta
+                        </h2>
+                        <div className="form-control mb-4">
+                            <label className="label">
+                                <span className="label-text">Imagen</span>
                             </label>
-                            <ul
-                                tabIndex={0}
-                                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-                            >
-                                <li>
-                                    <a>Cambiar</a>
-                                </li>
-                                <li>
-                                    <a>Eliminar</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Nombre</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            className="input input-bordered"
-                            placeholder="John Doe"
-                            value={name}
-                            onChange={onInputChange}
-                        />
-                    </div>
-                    <div className="divider"></div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">
-                                Tipo de personalidad
-                            </span>
-                        </label>
-                        <select
-                            className="select select-bordered"
-                            value={type}
-                            name="type"
-                            onChange={onInputChange}
-                        >
-                            {types.map((type) => (
-                                <option key={type} defaultValue={type}>
-                                    {type}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="divider"></div>
-                    <div className="form-control">
+                            <div className="dropdown self-center">
+                                <label
+                                    tabIndex={0}
+                                    className="btn btn-active btn-lg btn-ghost btn-circles h-20 w-20 rounded-full"
+                                >
+                                    <Avatar
+                                        tabIndex={0}
+                                        displayName={displayName}
+                                    />
+                                </label>
+                                <ul
+                                    tabIndex={0}
+                                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40"
+                                >
+                                    <li>
+                                        {photoURL ? (
+                                            <a>
+                                                <BiEdit /> Editar
+                                            </a>
+                                        ) : (
+                                            <a>
+                                                <AiOutlineFolderAdd /> Agregar
+                                            </a>
+                                        )}
+                                    </li>
+                                    {photoURL && (
+                                        <li>
+                                            <a>
+                                                <AiOutlineDelete /> Eliminar
+                                            </a>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Nombre</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                className="input input-bordered"
+                                placeholder="John Doe"
+                                value={name}
+                                onChange={onInputChange}
+                            />
+                        </div>
+                        <div className="divider"></div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">
+                                    Tipo de personalidad
+                                </span>
+                            </label>
+                            <select
+                                className="select select-bordered"
+                                value={type}
+                                name="type"
+                                onChange={onInputChange}
+                            >
+                                {types.map((type) => (
+                                    <option key={type} defaultValue={type}>
+                                        {type}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="divider"></div>
+                        {/* <div className="form-control">
                         <label className="label">
                             <span className="label-text">
                                 Correo electrónico
@@ -187,23 +229,24 @@ export const ConfigurationPage = () => {
                             onChange={onInputChange}
                         />
                     </div>
-                    <div className="divider"></div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">
-                                Cambia tu contraseña
-                            </span>
-                        </label>
-                        <input
-                            name="oldPassword"
-                            type="password"
-                            className="input input-bordered"
-                            placeholder="Contraseña actual"
-                            value={oldPassword}
-                            onChange={onInputChange}
-                        />
-                    </div>
-                    <input
+                    <div className="divider"></div> */}
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text font-bold text-error">
+                                    Introduce tu contraseña para guardar los
+                                    cambios
+                                </span>
+                            </label>
+                            <input
+                                name="oldPassword"
+                                type="password"
+                                className="input input-bordered"
+                                placeholder="Contraseña actual"
+                                value={oldPassword}
+                                onChange={onInputChange}
+                            />
+                        </div>
+                        {/* <input
                         name="newPassword"
                         type="password"
                         className="input input-bordered"
@@ -211,16 +254,38 @@ export const ConfigurationPage = () => {
                         value={newPassword}
                         onChange={onInputChange}
                         disabled={oldPassword.length === 0}
-                    />
+                    /> */}
 
-                    <div className="divider"></div>
-                    <button
-                        className="btn btn-active"
-                        onClick={() => onSubmit()}
-                    >
-                        Guardar
-                    </button>
-                </div>
+                        <div className="divider"></div>
+                        {!!errorMessage && (status !== "checking" || !loading) && (
+                            <div className="alert alert-error shadow-lg mb-4">
+                                <div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="stroke-current flex-shrink-0 h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    <span>{errorMessage}</span>
+                                </div>
+                            </div>
+                        )}
+                        <button
+                            className="btn btn-active"
+                            onClick={() => onSubmit()}
+                            disabled={oldPassword.length === 0}
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                )}
             </div>
             <ToastContainer />
         </div>

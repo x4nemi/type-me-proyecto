@@ -20,10 +20,10 @@ export const DashboardPage = () => {
             <div className="grid min-[500px]:grid-cols-1 grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-10 ">
                 <div className="card ring xl:h-52">
                     <div className="card-body">
-                        <h2 className="card-title xl:text-2xl">
+                        <h2 className="card-title xl:text-3xl">
                             <GiLightBulb color="yellow" size={30} /> Interactúa
                         </h2>
-                        <p className="mb-2">
+                        <p className="mb-2 lg:text-2xl">
                             Comparte tu opinión sobre el tipo de personalidad de
                             las personas que conozcas.
                         </p>
@@ -49,11 +49,11 @@ export const DashboardPage = () => {
                 </div>
                 <div className="card ring xl:h-52">
                     <div className="card-body">
-                        <h2 className="card-title">
+                        <h2 className="card-title xl:text-3xl">
                             <AiFillDelete color="red" size={30} />
                             Elimina publicaciones
                         </h2>
-                        <p className="mb-2">
+                        <p className="mb-2 lg:text-2xl">
                             Si no quieres que se vea una publicación compartida
                             en tu perfil, puedes eliminarla.
                         </p>
@@ -61,11 +61,11 @@ export const DashboardPage = () => {
                 </div>
                 <div className="card ring xl:h-52">
                     <div className="card-body">
-                        <h2 className="card-title">
+                        <h2 className="card-title xl:text-3xl">
                             <MdEdit size={30} color="purple" /> Edita
                             publicaciones
                         </h2>
-                        <p className="mb-2">
+                        <p className="mb-2 lg:text-2xl">
                             Si cometiste un error al escribir una publicación,
                             puedes editarla.
                         </p>

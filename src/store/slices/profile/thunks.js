@@ -21,3 +21,24 @@ export const startNewProfile = ({ type }) => {
         dispatch(setProfile(newProfile));
     };
 };
+
+export const startUpdateProfile = ({ displayName, type, photoURL }) => {
+    return async (dispatch, getState) => {
+        dispatch(loadingProfile());
+        const { uid } = getState().auth;
+        const profileRef = doc(FirebaseDB, `profile/${uid}`);
+
+        await setDoc(
+            profileRef,
+            { type, displayName, photoURL },
+            { merge: true }
+        );
+
+        const profile = getState().profile;
+        profile.type = type;
+        profile.displayName = displayName;
+        profile.photoURL = photoURL;
+
+        dispatch(setProfile(profile));
+    };
+};

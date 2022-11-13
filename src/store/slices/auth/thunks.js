@@ -1,21 +1,22 @@
 import {
+    getAuth,
+    reauthenticateWithCredential,
+    updateEmail,
+    updateProfile,
+    EmailAuthProvider,
+} from "firebase/auth";
+import {
     logInWithEmailAndPassword,
     logoutFirebase,
     registerUserWithEmailAndPassword,
     signInWithGoogle,
 } from "../../../firebase/providers";
 import { loadProfile } from "../../../helpers/loadProfile";
-import {
-    cancelLoadingProfile,
-    loadingProfile,
-    setProfile,
-} from "../profile/profileSlice";
+import { loadingProfile, setProfile } from "../profile/profileSlice";
+import { startUpdateProfile } from "../profile/thunks";
 import { clearPeople } from "../profiles/peopleSlice";
-import {
-    clearStatePublications,
-    setPublications,
-} from "../publications/publicationsSlice";
-import { checkingCredentials, login, logout } from "./authSlice";
+import { clearStatePublications } from "../publications/publicationsSlice";
+import { checkingCredentials, login, logout, setError } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
     return async (dispatch) => {
@@ -109,5 +110,107 @@ export const startLogOut = () => {
         );
         dispatch(clearPeople());
         dispatch(clearStatePublications());
+    };
+};
+
+export const startUpdateUser = ({ displayName, photoURL, type, password }) => {
+    return async (dispatch, getState) => {
+        const auth = getAuth();
+        const {
+            uid,
+            displayName: oldDisplayName,
+            photoURL: oldPhotoURL,
+            email,
+        } = getState().auth;
+
+        const user = auth.currentUser;
+
+        if (displayName !== oldDisplayName || photoURL !== oldPhotoURL) {
+            try {
+                const credential = EmailAuthProvider.credential(
+                    email,
+                    password
+                );
+
+                dispatch(checkingCredentials());
+                reauthenticateWithCredential(auth.currentUser, credential)
+                    .then(async () => {
+                        await updateProfile(auth.currentUser, {
+                            displayName,
+                            photoURL,
+                        });
+
+                        dispatch(
+                            startUpdateProfile({
+                                displayName,
+                                type,
+                                photoURL,
+                            })
+                        );
+                        const profile = getState().profile;
+                        dispatch(setProfile(profile));
+
+                        dispatch(
+                            login({
+                                displayName,
+                                photoURL,
+                                uid,
+                                email,
+                            })
+                        );
+                    })
+                    .catch((error) => {
+                        console.log(error);
+
+                        dispatch(
+                            login({
+                                uid,
+                                email,
+                                displayName: oldDisplayName,
+                                photoURL: oldPhotoURL,
+                            })
+                        );
+                        dispatch(
+                            setProfile({
+                                type,
+                                displayName: oldDisplayName,
+                                photoURL: oldPhotoURL,
+                                uid,
+                                voted_type: null,
+                            })
+                        );
+                        dispatch(
+                            setError({
+                                errorMessage: error.message,
+                            })
+                        );
+                    });
+            } catch (error) {
+                console.log(error);
+
+                dispatch(
+                    login({
+                        uid,
+                        email,
+                        displayName: oldDisplayName,
+                        photoURL: oldPhotoURL,
+                    })
+                );
+                dispatch(
+                    setProfile({
+                        type,
+                        displayName: oldDisplayName,
+                        photoURL: oldPhotoURL,
+                        uid,
+                        voted_type: null,
+                    })
+                );
+                dispatch(
+                    setError({
+                        errorMessage: error.message,
+                    })
+                );
+            }
+        }
     };
 };
