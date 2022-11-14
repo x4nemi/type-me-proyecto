@@ -80,7 +80,6 @@ export const PersonPage = () => {
         }
     }, [publications]);
 
-    console.log(publications.some((p) => p.uid === mainUid));
     return loading ? (
         <div className="flex justify-center mt-72">
             <img
