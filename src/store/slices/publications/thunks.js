@@ -48,6 +48,7 @@ export const startSavingPublication = ({ id, description, voted_type }) => {
         dispatch(loadingPublications());
 
         const { active } = getState().people;
+        const { displayName, photoURL, type } = getState().profile;
 
         const { publications } = getState().publications;
         const publication = publications.find(
@@ -58,6 +59,9 @@ export const startSavingPublication = ({ id, description, voted_type }) => {
             ...publication,
             description,
             voted_type,
+            displayName,
+            photoURL,
+            type,
         };
 
         const publicationRef = collection(FirebaseDB, `publications/`);
