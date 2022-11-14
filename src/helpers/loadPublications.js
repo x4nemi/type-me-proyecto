@@ -11,19 +11,19 @@ export const loadPublications = async (uid) => {
     if (docSnap.exists()) {
         const publications = docSnap.data().publications;
 
-        // if (publications.length > 0) {
-        //     publications.map(async (publication) => {
-        //         const profile = await loadProfile(publication.uid);
-        //         const newPublication = {
-        //             ...publication,
-        //             displayName: profile.displayName,
-        //             photoURL: profile.photoURL,
-        //         };
-        //         return newPublication;
-        //     });
-        //     return publications;
-        // }
-        return docSnap.data().publications;
+        const publicationsWithProfile = await Promise.all(
+            publications.map(async (publication) => {
+                const profile = await loadProfile(publication.uid);
+                return {
+                    ...publication,
+                    displayName: profile.displayName,
+                    photoURL: profile.photoURL,
+                    type: profile.type,
+                };
+            })
+        );
+
+        return publicationsWithProfile;
     }
     return [];
 };
