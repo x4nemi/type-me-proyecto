@@ -2,12 +2,12 @@ import { useForm } from "../../hooks";
 import { Avatar } from "../components/Avatar";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { AiOutlineDelete, AiOutlineFolderAdd } from "react-icons/ai";
 import { BiEdit } from "react-icons/bi";
 import { startUpdateUser } from "../../store/slices/auth/thunks";
-import { setError } from "../../store/slices/auth/authSlice";
+import { fileUpload } from "../../helpers/fileUpload";
 
 const types = [
     "ENFJ",
@@ -33,22 +33,9 @@ const formValidations = {
         (value) => value.length >= 3,
         "El nombre debe de tener más de 3 letras",
     ],
-    email: [
-        (value) =>
-            value
-                .toLowerCase()
-                .match(
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                ),
-        "El formato del email no es válido",
-    ],
     oldPassword: [
         (value) => value.length >= 6,
         "La contraseña actual debe de tener más de 6 letras",
-    ],
-    newPassword: [
-        (value) => value.length >= 6 || value.length === 0,
-        "La nueva contraseña debe de tener más de 6 letras",
     ],
 };
 
@@ -60,6 +47,7 @@ const formData = {
     newPassword: "",
 };
 export const ConfigurationPage = () => {
+    const fileInputRef = useRef();
     const {
         displayName,
         photoURL,
@@ -71,12 +59,13 @@ export const ConfigurationPage = () => {
     const { type: oldType, loading } = useSelector((state) => state.profile);
     const dispatch = useDispatch();
 
+    const [newPhotoURL, setNewPhotoURL] = useState(photoURL);
+    const [loadingPhotoURL, setLoadingPhotoURL] = useState(false);
+
     const {
         type,
         name,
-        email,
         oldPassword,
-        newPassword,
         onInputChange,
         nameValid,
         emailValid,
@@ -84,7 +73,6 @@ export const ConfigurationPage = () => {
         newPasswordValid,
         isFormValid,
         setFormStates,
-        formState,
     } = useForm(formData, formValidations);
 
     useEffect(() => {
@@ -98,6 +86,21 @@ export const ConfigurationPage = () => {
         setFormStates(formm);
     }, []);
 
+    const handleFile = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLoadingPhotoURL(true);
+            const url = await fileUpload(file);
+            setNewPhotoURL(url);
+            setLoadingPhotoURL(false);
+        }
+    };
+
+    const deleteFile = () => {
+        setNewPhotoURL(null);
+        fileInputRef.current.value = "";
+    };
+
     const onSubmit = () => {
         if (isFormValid) {
             toast("Formulario bien", {
@@ -107,7 +110,7 @@ export const ConfigurationPage = () => {
                 startUpdateUser({
                     type,
                     displayName: name,
-                    photoURL,
+                    photoURL: newPhotoURL,
                     password: oldPassword,
                 })
             );
@@ -145,39 +148,67 @@ export const ConfigurationPage = () => {
                             </label>
 
                             <div className="dropdown self-center">
-                                <label
-                                    tabIndex={0}
-                                    className="btn btn-active btn-lg btn-ghost btn-circles h-20 w-20 rounded-full"
-                                >
-                                    <Avatar
-                                        tabIndex={0}
-                                        displayName={displayName}
+                                {loadingPhotoURL ? (
+                                    <img
+                                        src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif"
+                                        alt="loading"
+                                        width="50"
                                     />
-                                </label>
+                                ) : (
+                                    <label
+                                        tabIndex={0}
+                                        className={`btn btn-lg btn-ghost btn-circles ${
+                                            newPhotoURL
+                                                ? "h-20 w-20 ring"
+                                                : "h-20 w-20"
+                                        } rounded-full bg-base-100`}
+                                    >
+                                        <Avatar
+                                            size={newPhotoURL ? 60 : 16}
+                                            tabIndex={0}
+                                            displayName={displayName}
+                                            photoURL={newPhotoURL}
+                                        />
+                                    </label>
+                                )}
                                 <ul
                                     tabIndex={0}
                                     className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40"
                                 >
                                     <li>
-                                        {photoURL ? (
-                                            <a>
+                                        {newPhotoURL ? (
+                                            <a
+                                                onClick={() =>
+                                                    fileInputRef.current.click()
+                                                }
+                                            >
                                                 <BiEdit /> Editar
                                             </a>
                                         ) : (
-                                            <a>
+                                            <a
+                                                onClick={() =>
+                                                    fileInputRef.current.click()
+                                                }
+                                            >
                                                 <AiOutlineFolderAdd /> Agregar
                                             </a>
                                         )}
                                     </li>
-                                    {photoURL && (
+                                    {newPhotoURL && (
                                         <li>
-                                            <a>
+                                            <a onClick={() => deleteFile()}>
                                                 <AiOutlineDelete /> Eliminar
                                             </a>
                                         </li>
                                     )}
                                 </ul>
                             </div>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFile}
+                                style={{ display: "none" }}
+                            />
                         </div>
 
                         <div className="form-control">
