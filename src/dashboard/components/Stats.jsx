@@ -5,7 +5,12 @@ export const Stats = ({
     photoURL,
     type,
     nPublicaciones = 0,
-    votedType,
+    votedType = [
+        {
+            type,
+            count: 0,
+        },
+    ],
 }) => {
     return (
         <div className="stats shadow-xl mt-4 bg-base-100 p-4 xl:stats-horizontal md:stats-vertical w-full sm:stats-vertical min-[500px]:stats-vertical flex-shrink">
@@ -60,12 +65,22 @@ export const Stats = ({
                     </svg>
                 </div>
                 <div className="stat-title">
-                    Tipo de personalidad más votado
+                    Tipos de personalidad más votados
                 </div>
                 <div className="stat-value text-primary">
-                    <span className="bg-yellow-100 text-yellow-800 text-xl font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900">
-                        {votedType}
-                    </span>
+                    {votedType.map(
+                        ({ type: vtype }, index) =>
+                            index < 3 && (
+                                <span
+                                    key={index}
+                                    className={`bg-indigo-${
+                                        600 - index * 100
+                                    } text-slate-200 text-xl font-medium mr-2 px-2.5 py-0.5 rounded`}
+                                >
+                                    {vtype}
+                                </span>
+                            )
+                    )}
                 </div>
             </div>
         </div>

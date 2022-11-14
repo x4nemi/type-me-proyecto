@@ -6,5 +6,5 @@ export const getMajorVotedType = (publications) => {
         count: types.filter((t) => t === type).length,
     }));
     typesCount.sort((a, b) => b.count - a.count);
-    return typesCount[0].type;
+    return typesCount;
 };

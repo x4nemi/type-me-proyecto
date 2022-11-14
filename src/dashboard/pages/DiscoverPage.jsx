@@ -17,7 +17,12 @@ export const DiscoverPage = () => {
     return (
         <div className="grid grid-cols-1">
             {loading ? (
-                <CheckingAuth />
+                <div className="flex justify-center mt-32">
+                    <img
+                        src="https://soongyu.carrd.co/assets/images/image01.gif?v87774859893651"
+                        alt="loading"
+                    />
+                </div>
             ) : (
                 <div>
                     <h1 className="text-3xl font-bold mb-4">

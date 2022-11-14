@@ -15,18 +15,26 @@ import {
 } from "../../store/slices/publications/publicationsSlice";
 import { getMajorVotedType } from "../../helpers/getMajorVotedType";
 import { FaRegSadTear } from "react-icons/fa";
+import { startLoadingPeople } from "../../store/slices/profiles/thunks";
 
 export const PersonPage = () => {
     const { active = { displayName: "", photoURL: "", type: "" } } =
         useSelector((state) => state.people);
     const { uid } = useParams();
     const { displayName = "", photoURL = "", type = "" } = active;
-    const { publications } = useSelector((state) => state.publications);
+    const { publications, loading } = useSelector(
+        (state) => state.publications
+    );
     const { people } = useSelector((state) => state.people);
 
     const { uid: mainUid } = useSelector((state) => state.auth);
 
-    const [votedType, setVotedType] = useState(type);
+    const [votedType, setVotedType] = useState([
+        {
+            type: type,
+            count: 0,
+        },
+    ]);
 
     const dispatch = useDispatch();
 
@@ -43,34 +51,44 @@ export const PersonPage = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(setActivePerson("1"));
+            dispatch(setActivePerson("-1"));
             dispatch(setPublications([]));
             dispatch(setActivePublication("-1"));
         };
     }, []);
 
     useEffect(() => {
-        dispatch(startLoadingPublications({ uid }));
-
-        dispatch(setActivePerson({ uid }));
-
-        //if active is null, redirect to discover
-    }, [uid]);
-
-    useEffect(() => {
         if (!people.some((person) => person.uid === uid)) {
             window.location.href = "/discover";
+        } else {
+            dispatch(startLoadingPublications({ uid }));
+
+            dispatch(setActivePerson({ uid }));
         }
-    }, [people]);
+        //if active is null, redirect to discover
+    }, [uid, active, people]);
+
+    useEffect(() => {
+        dispatch(startLoadingPeople());
+    }, [dispatch]);
 
     useEffect(() => {
         if (publications.length > 0) {
             setVotedType(getMajorVotedType(publications));
         } else {
-            setVotedType(type);
+            setVotedType(votedType);
         }
     }, [publications]);
-    return (
+
+    console.log(publications.some((p) => p.uid === mainUid));
+    return loading ? (
+        <div className="flex justify-center mt-72">
+            <img
+                src="https://soongyu.carrd.co/assets/images/image01.gif?v87774859893651"
+                alt="loading"
+            />
+        </div>
+    ) : (
         <div className="items-center justify-center grid grid-cols-1">
             <Stats
                 displayName={displayName}
@@ -80,7 +98,7 @@ export const PersonPage = () => {
                 nPublicaciones={publications.length}
             />
 
-            {mainUid !== uid && (
+            {mainUid !== uid && !publications.some((p) => p.uid === mainUid) && (
                 <div className="flex justify-center mt-10">
                     <button
                         className="btn btn-accent"
@@ -99,7 +117,7 @@ export const PersonPage = () => {
                     <FaRegSadTear size={100} />
                 </div>
             ) : (
-                <div className="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-2 mt-10 mr-10 place-items-center">
+                <div className="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-2 mt-10 place-items-center">
                     {publications.map((publication) => (
                         <Publication
                             key={publication.id}
