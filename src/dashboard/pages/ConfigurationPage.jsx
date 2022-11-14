@@ -97,7 +97,7 @@ export const ConfigurationPage = () => {
     };
 
     const deleteFile = () => {
-        setNewPhotoURL(null);
+        setNewPhotoURL("");
         fileInputRef.current.value = "";
     };
 
@@ -105,6 +105,12 @@ export const ConfigurationPage = () => {
         if (isFormValid) {
             toast("Formulario bien", {
                 icon: "🚀",
+            });
+            console.log({
+                type,
+                name,
+                oldPassword,
+                photoURL: newPhotoURL,
             });
             dispatch(
                 startUpdateUser({

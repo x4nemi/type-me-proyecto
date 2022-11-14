@@ -73,9 +73,7 @@ export const Stats = ({
                             index < 3 && (
                                 <span
                                     key={index}
-                                    className={`bg-indigo-${
-                                        600 - index * 100
-                                    } text-slate-200 text-xl font-medium mr-2 px-2.5 py-0.5 rounded`}
+                                    className={`bg-indigo-500 text-slate-100 text-xl font-medium mr-2 px-2.5 py-0.5 rounded`}
                                 >
                                     {vtype}
                                 </span>

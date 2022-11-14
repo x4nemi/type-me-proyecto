@@ -176,6 +176,7 @@ export const startUpdateUser = ({ displayName, photoURL, type, password }) => {
                                 displayName: oldDisplayName,
                                 photoURL: oldPhotoURL,
                                 uid,
+                                type,
                                 voted_type: null,
                             })
                         );

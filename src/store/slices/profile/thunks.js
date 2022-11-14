@@ -35,10 +35,14 @@ export const startUpdateProfile = ({ displayName, type, photoURL }) => {
         );
 
         const profile = getState().profile;
-        profile.type = type;
-        profile.displayName = displayName;
-        profile.photoURL = photoURL;
 
-        dispatch(setProfile(profile));
+        const newProfile = {
+            ...profile,
+            type,
+            displayName,
+            photoURL,
+        };
+
+        dispatch(setProfile(newProfile));
     };
 };
