@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-export const Avatar = ({ displayName, photoURL, type, size = 16 }) => {
+export const Avatar = ({ displayName, photoURL, type, size = 24 }) => {
     const initials = useMemo(() => {
         const parts = displayName.split(" ");
         if (parts.length >= 2) {
@@ -16,17 +16,17 @@ export const Avatar = ({ displayName, photoURL, type, size = 16 }) => {
                     <img
                         src={photoURL}
                         alt={initials}
-                        width="20"
-                        height="20"
+                        width="24"
+                        height="24"
                         referrerPolicy="no-referrer"
                         className="rounded-full"
                     />
                 </div>
             ) : (
                 <div
-                    className={`bg-primary-content text-neutral-content rounded-full w-${size} ring`}
+                    className={`bg-primary-content text-neutral-content rounded-full w-16 ring`}
                 >
-                    <span className={`${size > 16 ? "text-9xl" : "text-3xl"}`}>
+                    <span className={`${size > 16 ? "text-3xl" : "text-xl"}`}>
                         {initials}
                     </span>
                 </div>

@@ -11,6 +11,7 @@ import {
     startLogInWithEmailAndPassword,
 } from "../../store/slices/auth/thunks";
 import { CheckingAuth } from "../../components/CheckingAuth";
+import { ForgetPassword } from "../components/ForgetPassword";
 
 const formData = {
     email: "",
@@ -40,6 +41,8 @@ export const LoginPage = () => {
     const { errorMessage, status } = useSelector((state) => state.auth);
 
     const dispatch = useDispatch();
+
+    const [openModal, setOpenModal] = useState(false);
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -154,8 +157,20 @@ export const LoginPage = () => {
                             Regístrate
                         </RouterLink>
                     </div>
+                    <div className="row-end-1">
+                        <button
+                            className="btn btn-outline btn-error btn-xs"
+                            onClick={() => setOpenModal(true)}
+                        >
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
                 </div>
             </div>
+            <ForgetPassword
+                open={openModal}
+                onDismiss={() => setOpenModal(false)}
+            />
             <ToastContainer autoClose={10000} />
         </AuthLayout>
     );
