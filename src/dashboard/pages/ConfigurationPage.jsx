@@ -8,6 +8,7 @@ import { AiOutlineDelete, AiOutlineFolderAdd } from "react-icons/ai";
 import { BiEdit } from "react-icons/bi";
 import { startUpdateUser } from "../../store/slices/auth/thunks";
 import { fileUpload } from "../../helpers/fileUpload";
+import { getAuth } from "firebase/auth";
 
 const types = [
     "ENFJ",
@@ -47,6 +48,8 @@ const formData = {
     newPassword: "",
 };
 export const ConfigurationPage = () => {
+    const auth = getAuth();
+
     const fileInputRef = useRef();
     const {
         displayName,
@@ -250,48 +253,28 @@ export const ConfigurationPage = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="divider"></div>
-                        {/* <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">
-                                Correo electrónico
-                            </span>
-                        </label>
-                        <input
-                            name="email"
-                            type="email"
-                            className="input input-bordered"
-                            placeholder="info@site.com"
-                            value={email}
-                            onChange={onInputChange}
-                        />
-                    </div>
-                    <div className="divider"></div> */}
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-bold text-error">
-                                    Introduce tu contraseña para guardar los
-                                    cambios
-                                </span>
-                            </label>
-                            <input
-                                name="oldPassword"
-                                type="password"
-                                className="input input-bordered"
-                                placeholder="Contraseña actual"
-                                value={oldPassword}
-                                onChange={onInputChange}
-                            />
-                        </div>
-                        {/* <input
-                        name="newPassword"
-                        type="password"
-                        className="input input-bordered"
-                        placeholder="Contraseña nueva"
-                        value={newPassword}
-                        onChange={onInputChange}
-                        disabled={oldPassword.length === 0}
-                    /> */}
+                        {auth.currentUser.providerData[0].providerId !==
+                            "google.com" && (
+                            <>
+                                <div className="divider"></div>
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text font-bold text-error">
+                                            Introduce tu contraseña para guardar
+                                            los cambios
+                                        </span>
+                                    </label>
+                                    <input
+                                        name="oldPassword"
+                                        type="password"
+                                        className="input input-bordered"
+                                        placeholder="Contraseña actual"
+                                        value={oldPassword}
+                                        onChange={onInputChange}
+                                    />
+                                </div>
+                            </>
+                        )}
 
                         <div className="divider"></div>
                         {!!errorMessage && (status !== "checking" || !loading) && (
